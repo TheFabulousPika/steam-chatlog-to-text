@@ -1,0 +1,16 @@
+{
+  "manifest_version": 2,
+
+  "name": "Steam ChatLog2Text",
+  "description": "Reformats Steam Chat Log on Web to AIM-like format",
+  "version": "0.5",
+
+  "browser_action": {
+   "default_icon": "icon.png",
+   "default_popup": "popup.html"
+  },
+  "permissions": [
+   "activeTab",
+   "https://steamcommunity.com/chat/"
+   ]
+}
