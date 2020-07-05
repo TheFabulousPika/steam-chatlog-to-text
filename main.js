@@ -27,9 +27,7 @@ function reformat() {
 	var newLog = '';
 	var styleCSS = '<style>body { font-family: monospace; color: #c1c6cf; background-color: #1d1f24} .speaker { color: #6dcff6} a { color: #57cbde} .large { zoom : 0.35}</style>';
 //	var styleCSS = '<style>body { font-family: monospace; color: black; background-color: white} .speaker { color: black}</style>';
-	var htmlHeader = '<html><head><title>' + friendName + '</title>' + styleCSS + '</head><body>';
-	var htmlFooter = '</body>';
-	newLog = newLog + htmlHeader;
+	var htmlHeader = '<title>' + friendName + '</title>' + styleCSS;
 	for (var i = 0; i < chatHistory.length-1; i++){
 		var thisChatBlock = chatHistory[i];
 //Use the className of the chatblock to execute corresponding function in this script.
@@ -42,8 +40,8 @@ function reformat() {
 		var newLine = window[useThisFunction](thisChatBlock);
 		newLog = newLog + newLine;
 	}
-	newLog = newLog + htmlFooter;
 	var newWindow = window.open();
+	newWindow.document.head.innerHTML = htmlHeader;
 	newWindow.document.body.innerHTML = newLog;
 	newWindow.scrollTo(0,newWindow.document.body.scrollHeight);
 }
