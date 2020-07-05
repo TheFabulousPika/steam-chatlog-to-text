@@ -234,6 +234,11 @@ function cleanupMsg(a){
 	var videoURL = thisMsgNode.getElementsByClassName("chatImageURL")[0].href;
 	cleanedMsgText = '[attached video] ' + linkefyURL(videoURL);
 	}
+//Sticker
+	else if (checkIfSticker(thisMsgNode)){
+	var stickerURL = thisMsgNode.firstChild.children[1].src;
+	cleanedMsgText = '<br /><img src="' + stickerURL + '" alt="' + stickerURL + '" />';
+	}
 //Trade
 	else if (checkIfTradeInvite(thisMsgNode)){
 	var tradeOfferText = thisMsgNode.getElementsByClassName("inviteLabel TradeOfferInvite_Title")[0].innerText;
@@ -293,6 +298,20 @@ function checkIfGiphy(a){
 		loopBoolean = evalPatt.test(childClass);
 		}
 	return loopBoolean;
+	}
+}
+function checkIfSticker(a){
+	var thisMsgNode = a;
+	if (typeof thisMsgNode.firstChild.children[1] == "undefined"){
+	return false;
+	}
+	if (typeof thisMsgNode.firstChild.children[1].src == "undefined"){
+	return false;
+	}
+	else {
+	var urlSrc = thisMsgNode.firstChild.children[1].src;
+	var evalPatt = new RegExp("sticker");
+	return evalPatt.test(urlSrc);
 	}
 }
 function checkIfMe(a){
