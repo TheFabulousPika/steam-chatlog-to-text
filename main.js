@@ -253,14 +253,14 @@ function cleanupMsg(a){
 //Random
 	else if (checkIfRandom(thisMsgNode)){
 	var randomHeader = '/random ';
-	var randomValues = thisMsgNode.firstElementChild.firstElementChild..nextSibling.innerText;
+	var randomValues = thisMsgNode.firstElementChild.firstElementChild.nextSibling.innerText;
 	var randomValues = thisMsgNode.firstElementChild.firstElementChild.nextSibling.innerText;
 	var actualValues = thisMsgNode.querySelectorAll('[class*=randomActual]');
 	var rolledNumber = '';
 		for (var i = 0; i < actualValues.length; i++){
 		rolledNumber = rolledNumber + actualValues[i].innerText;
 		}
-	cleanedMsgText = randomHeader + randomValues + ':' + rolledNumber;
+	cleanedMsgText = randomHeader + randomValues + ' : ' + rolledNumber;
 	}
 //Spoiler Media
 	else if (checkIfSpoilerMedia(thisMsgNode)){
