@@ -22,12 +22,12 @@
 function reformat() {
 	var activeTabIndex = findActiveTabIndex();
 	var chatHistory = document.getElementsByClassName("chatHistory")[activeTabIndex].childNodes;
-	var friendName = findChatFriendName();
+	var chatRoomName = findChatRoomName();
 //Where the reformatted log will be stored
 	var newLog = '';
-	var styleCSS = '<style>body { font-family: monospace; color: #c1c6cf; background-color: #1d1f24} .speaker { color: #6dcff6} a { color: #57cbde} .large { zoom : 0.35}</style>';
+	var styleCSS = '<style>body { font-family: monospace; color: #c1c6cf; background-color: #1d1f24} .speaker { color: #6dcff6} a { color: #57cbde} .large { zoom : 0.35} .serverMsg {  color: #aaffaa ; font-style: italic }</style>';
 //	var styleCSS = '<style>body { font-family: monospace; color: black; background-color: white} .speaker { color: black}</style>';
-	var htmlHeader = '<title>' + friendName + '</title>' + styleCSS;
+	var htmlHeader = '<title>' + chatRoomName + '</title>' + styleCSS;
 	for (var i = 0; i < chatHistory.length-1; i++){
 		var thisChatBlock = chatHistory[i];
 //Use the className of the chatblock to execute corresponding function in this script.
@@ -45,11 +45,16 @@ function reformat() {
 	newWindow.document.body.innerHTML = newLog;
 	newWindow.scrollTo(0,newWindow.document.body.scrollHeight);
 }
-function findChatFriendName() {
+function findChatRoomName() {
 	var activeTabIndex = findActiveTabIndex();
 	var activeChatBody = document.getElementsByClassName("DropTarget chatWindow MultiUserChat")[activeTabIndex];
-	var friendName = activeChatBody.getElementsByClassName("FriendChatTypingNotification")[0].innerText.split(" is typing a message...")[0];
-	return friendName;
+	if (activeChatBody.getElementsByClassName("FriendChatTypingNotification").length > 0){
+		var friendName = activeChatBody.getElementsByClassName("FriendChatTypingNotification")[0].innerText.split(" is typing a message...")[0];
+		return friendName;
+	}
+	else {
+	return activeChatBody.getElementsByClassName("chatRoomGroupHeaderName")[0].innerHTML;
+	}
 }
 function findActiveTabIndex() {
 	var chatBodies = document.getElementsByClassName("DropTarget chatWindow MultiUserChat");
@@ -70,6 +75,10 @@ function msgtimeDivision(a){
 function msgtimeDivisiontime_passes(a){
 	var lineDivision = '<hr />';
 	return lineDivision;
+}
+function msgserverMsg(a){
+	var serverMsg =  '<span class="serverMsg">' + a.innerText +  '</span><br />';
+	return serverMsg;
 }
 function ChatMessageBlock(a){
 	var thisBlockSpeaker = a.getElementsByClassName("speakerName")[0].innerText;
