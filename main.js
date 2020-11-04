@@ -260,7 +260,7 @@ function cleanupMsg(a){
 		for (var i = 0; i < actualValues.length; i++){
 		rolledNumber = rolledNumber + actualValues[i].innerText;
 		}
-	cleanedMsgText = randomHeader + randomValues + ' : ' + rolledNumber;
+	cleanedMsgText = randomHeader + randomValues + ': ' + rolledNumber;
 	}
 //Spoiler Media
 	else if (checkIfSpoilerMedia(thisMsgNode)){
