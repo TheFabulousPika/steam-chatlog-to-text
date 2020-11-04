@@ -190,7 +190,8 @@ function cleanupMsg(a){
 	}
 //code
 	else if (checkIfCode(thisMsgNode)) {
-	cleanedMsgText = '/code ' + thisMsgNode.firstChild.innerHTML;
+	var codeText= thisMsgNode.querySelectorAll('[class*=CodeMessage]')[0].innerHTML;
+	cleanedMsgText = '/code ' + codeText;
 	}
 //spoiler
 	else if (checkIfSpoiler(thisMsgNode)) {
@@ -331,9 +332,13 @@ function checkIfPre(a){
 }
 function checkIfCode(a){
 	var thisMsgNode = a;
-	var parentClass = thisMsgNode.parentNode.className;
-	var evalPatt = new RegExp("ChatMsgSlashCode");
-	return evalPatt.test(parentClass);
+	var codeOrNot= thisMsgNode.querySelectorAll('[class*=CodeMessage]').length;
+	if (codeOrNot == 0){
+	return false;
+	}
+	else {
+	return true;
+	}
 }
 function checkIfGraph(a){
 	var thisMsgNode = a;
