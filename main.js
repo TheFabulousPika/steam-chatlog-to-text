@@ -84,24 +84,26 @@ function ChatMessageBlock(a){
 	var thisBlockSpeaker = a.getElementsByClassName("speakerName")[0].innerText;
 	var thisBlockMsg = a.getElementsByClassName("msgText");
 	var firstMsg = thisBlockMsg[0];
+	var thisBlockTime;
 	if (checkIfMe(firstMsg)){
-	var thisBlockTime = cleanupTimeStamp(firstMsg.nextSibling.innerText);
+	thisBlockTime = cleanupTimeStamp(firstMsg.nextSibling.innerText);
 	}
 	else {
-	var thisBlockTime = cleanupTimeStamp(a.getElementsByClassName("speakerTimeStamp")[0].innerText);
+	thisBlockTime = cleanupTimeStamp(a.getElementsByClassName("speakerTimeStamp")[0].innerText);
 	}
 	var thisBlockMsgTime = new Array(thisBlockMsg.length);
 	var thisBlockReturn = '';
 	thisBlockMsgTime[0] = thisBlockTime;
 		for (var j = 1; j < thisBlockMsg.length ; j++){
+			var thisMsgTime;
 //If the msg has an associated timestamp within the log, use that one
 			if (thisBlockMsg[j].parentNode.childNodes.length > '2'){
 				if (checkIfMe(thisBlockMsg[j])){
-				var thisMsgTime = thisBlockMsg[j].nextSibling.innerHTML;
+				thisMsgTime = thisBlockMsg[j].nextSibling.innerHTML;
 				thisBlockMsgTime[j] = thisMsgTime;
 				}
 				else {
-				var thisMsgTime = thisBlockMsg[j].previousSibling.innerHTML;
+				thisMsgTime = thisBlockMsg[j].previousSibling.innerHTML;
 				thisBlockMsgTime[j] = thisMsgTime;
 				}
 			}
@@ -117,21 +119,23 @@ function ChatMessageBlock(a){
 		return thisBlockReturn;
 }
 function ChatMessageBlockSingletonMsg(a){
+	var thisChatBlock;
 	if (checkIfVoiceChatMsg(a)){
-	var thisChatBlock = a.getElementsByClassName("msg voiceChannelInvite")[0].innerText + '<hr />';
+	thisChatBlock = a.getElementsByClassName("msg voiceChannelInvite")[0].innerText + '<hr />';
 	return thisChatBlock;
 	}
 	else {
 	var msgText = a.getElementsByClassName("msgText")[0];
 	var thisBlockSpeaker = a.getElementsByClassName("speakerName")[0].innerText;
+	var msgTime;
 		if (checkIfMe(msgText)){
-		var msgTime = cleanupTimeStamp(msgText.nextSibling.innerText);
+		msgTime = cleanupTimeStamp(msgText.nextSibling.innerText);
 		}
 		else {
-		var msgTime = cleanupTimeStamp(a.getElementsByClassName("speakerTimeStamp")[0].innerText);
+		msgTime = cleanupTimeStamp(a.getElementsByClassName("speakerTimeStamp")[0].innerText);
 		}
 	var cleanedMsgText = cleanupMsg(msgText);
-	var thisChatBlock = msgTime + ' - <span class="speaker">' + thisBlockSpeaker + ':</span> ' + cleanedMsgText + '<br />';
+	thisChatBlock = msgTime + ' - <span class="speaker">' + thisBlockSpeaker + ':</span> ' + cleanedMsgText + '<br />';
 	return thisChatBlock;
 	}
 }
@@ -142,7 +146,7 @@ function ChatMessageBlockLastMessageBlockHasInternalTimeStamp(a){
 	return ChatMessageBlock(a);
 }
 function ChatMessageBlockLastMessageBlockSingletonMsg(a){
-	return ChatMessageBlockSingletonMsg(a)
+	return ChatMessageBlockSingletonMsg(a);
 }
 function disconnectBlocker(){
 }
@@ -204,8 +208,8 @@ function cleanupMsg(a){
 	}
 //spoiler
 	else if (checkIfSpoiler(thisMsgNode)) {
-	var spoilerRawHTML = thisMsgNode.getElementsByClassName("spoilerMsg")[0].innerHTML;
-	cleanedMsgText = '/spoiler ' + spoilerRawHTML;
+	var spoilerTextHTML = thisMsgNode.getElementsByClassName("spoilerMsg")[0].innerHTML;
+	cleanedMsgText = '/spoiler ' + spoilerTextHTML;
 	}
 //quote
 	else if (checkIfQuote(thisMsgNode)) {
@@ -214,7 +218,7 @@ function cleanupMsg(a){
 //graph
 	else if (checkIfGraph(thisMsgNode)) {
 	var graphURL = thisMsgNode.getElementsByClassName("ChatMessageOpenGraph_Title")[0].href;
-	var graphTitle = thisMsgNode.getElementsByClassName("ChatMessageOpenGraph_Title")[0].innerText
+	var graphTitle = thisMsgNode.getElementsByClassName("ChatMessageOpenGraph_Title")[0].innerText;
 	cleanedMsgText = linkefyURL(graphURL) + '<br />' + graphTitle;
 	}
 //me
@@ -275,8 +279,8 @@ function cleanupMsg(a){
 	}
 //Spoiler Media
 	else if (checkIfSpoilerMedia(thisMsgNode)){
-	var spoilerRawHTML = thisMsgNode.getElementsByClassName("spoilerMsg")[0].innerHTML;
-	cleanedMsgText = '/spoiler ' + spoilerRawHTML;
+	var spoilerMediaHTML = thisMsgNode.getElementsByClassName("spoilerMsg")[0].innerHTML;
+	cleanedMsgText = '/spoiler ' + spoilerMediaHTML;
 	}
 //catch-all for messages that aren't in above categories
 	else {
@@ -297,8 +301,8 @@ function checkIfGiphy(a){
 	return false;
 	}
 	else {
-	var loopBoolean = new Boolean(false);
-		for (var i = 0, loopBoolean; (i < thisMsgNode.children.length) && (loopBoolean == false) ; i++){
+	var loopBoolean = false;
+		for (var i = 0; (i < thisMsgNode.children.length) && (loopBoolean == false) ; i++){
 		var childClass = thisMsgNode.children[i].className;
 		var evalPatt = new RegExp("giphyImg");
 		loopBoolean = evalPatt.test(childClass);
