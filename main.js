@@ -185,7 +185,8 @@ function cleanupMsg(a){
 	}
 //pre
 	else if (checkIfPre(thisMsgNode)){
-	cleanedMsgText = '/pre ' + thisMsgNode.firstChild.innerHTML;
+	var preText= thisMsgNode.querySelectorAll('[class*=PreMessage]')[0].innerHTML;
+	cleanedMsgText = '/pre ' + preText;
 	}
 //code
 	else if (checkIfCode(thisMsgNode)) {
@@ -320,9 +321,13 @@ function checkIfMe(a){
 }
 function checkIfPre(a){
 	var thisMsgNode = a;
-	var parentClass = thisMsgNode.parentNode.className;
-	var evalPatt = new RegExp("ChatMsgSlashPre");
-	return evalPatt.test(parentClass);
+	var preOrNot= thisMsgNode.querySelectorAll('[class*=PreMessage]').length;
+	if (preOrNot == 0){
+	return false;
+	}
+	else {
+	return true;
+	}
 }
 function checkIfCode(a){
 	var thisMsgNode = a;
