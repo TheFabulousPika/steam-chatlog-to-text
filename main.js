@@ -193,7 +193,8 @@ function cleanupMsg(a){
 	}
 //spoiler
 	else if (checkIfSpoiler(thisMsgNode)) {
-	cleanedMsgText = '/spoiler ' + thisMsgNode.firstChild.innerHTML;
+	var spoilerRawHTML = thisMsgNode.getElementsByClassName("spoilerMsg")[0].innerHTML;
+	cleanedMsgText = '/spoiler ' + spoilerRawHTML;
 	}
 //quote
 	else if (checkIfQuote(thisMsgNode)) {
@@ -263,9 +264,8 @@ function cleanupMsg(a){
 	}
 //Spoiler Media
 	else if (checkIfSpoilerMedia(thisMsgNode)){
-//	var imgURL = thisMsgNode.getElementsByClassName("chatImageURL")[0].href;
-	var imgURL = thisMsgNode.getElementsByClassName("chatImageContainer")[0].attributes[2].value;
-	cleanedMsgText = '[spoiler] ' + linkefyURL(imgURL);
+	var spoilerRawHTML = thisMsgNode.getElementsByClassName("spoilerMsg")[0].innerHTML;
+	cleanedMsgText = '/spoiler ' + spoilerRawHTML;
 	}
 //catch-all for messages that aren't in above categories
 	else {
