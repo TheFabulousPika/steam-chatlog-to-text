@@ -253,16 +253,14 @@ function cleanupMsg(a){
 //Random
 	else if (checkIfRandom(thisMsgNode)){
 	var randomHeader = '/random ';
-//	var randomValues = thisMsgNode.getElementsByClassName("randomValues")[0].innerText;
-	var randomValues = thisMsgNode.firstElementChild.nextElementSibling.innerText;
-//	var randomNumbersActual = thisMsgNode.getElementsByClassName("randomNumberLabel randomActual");
-	var randomNumberClassName = thisMsgNode.firstElementChild.nextElementSibling.nextElementSibling.className;
-	var randomNumbersActual = thisMsgNode.getElementsByClassName(randomNumberClassName);
-	var randomNumber = '';
-		for (var i = 0;i < randomNumbersActual.length; i++){
-		randomNumber = randomNumber + randomNumbersActual[i].firstElementChild.firstElementChild.innerText;
+	var randomValues = thisMsgNode.firstElementChild.firstElementChild..nextSibling.innerText;
+	var randomValues = thisMsgNode.firstElementChild.firstElementChild.nextSibling.innerText;
+	var actualValues = thisMsgNode.querySelectorAll('[class*=randomActual]');
+	var rolledNumber = '';
+		for (var i = 0; i < actualValues.length; i++){
+		rolledNumber = rolledNumber + actualValues[i].innerText;
 		}
-	cleanedMsgText = randomHeader + randomValues + ':' + randomNumber;
+	cleanedMsgText = randomHeader + randomValues + ':' + rolledNumber;
 	}
 //Spoiler Media
 	else if (checkIfSpoilerMedia(thisMsgNode)){
