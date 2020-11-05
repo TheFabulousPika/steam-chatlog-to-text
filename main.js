@@ -213,7 +213,7 @@ function cleanupMsg(a){
 	}
 //quote
 	else if (checkIfQuote(thisMsgNode)) {
-	cleanedMsgText = '/quote ' + thisMsgNode.firstChild.innerText;
+	cleanedMsgText = '/quote ' + thisMsgNode.querySelectorAll('[class*=QuoteMessage]')[0].innerHTML;
 	}
 //graph
 	else if (checkIfGraph(thisMsgNode)) {
@@ -281,6 +281,19 @@ function cleanupMsg(a){
 	else if (checkIfSpoilerMedia(thisMsgNode)){
 	var spoilerMediaHTML = thisMsgNode.getElementsByClassName("spoilerMsg")[0].innerHTML;
 	cleanedMsgText = '/spoiler ' + spoilerMediaHTML;
+	}
+//flip
+	else if (checkIfFlip(thisMsgNode)) {
+	cleanedMsgText = '/flip: ' + thisMsgNode.querySelectorAll('[class*=resultLabel]')[0].innerHTML;
+	}
+//StoreLink
+	else if (checkIfStoreLink(thisMsgNode)){
+	var gameTitle = thisMsgNode.querySelectorAll('[class*=ChatMessageSteamStore_Name]')[0].innerHTML;
+	var gamePublisher = thisMsgNode.querySelectorAll('[class*=ChatMessageSteamStore_GameNameAndIcon]')[0].nextSibling.innerHTML;
+	var gameYear = thisMsgNode.querySelectorAll('[class*=ChatMessageSteamStore_GameNameAndIcon]')[0].nextSibling.nextSibling.innerHTML;
+	var gameSummary = thisMsgNode.querySelectorAll('[class*=ChatMessageSteamStore_Description]')[0].innerHTML;
+	var gamePrice = thisMsgNode.querySelectorAll('[class*=ChatMessageSteamStore_Pricing_Final]')[1].innerHTML;
+	cleanedMsgText = gameTitle + ' / ' + gamePublisher + ' / ' + gameYear + '<br />' + gameSummary  + '<br />' + gamePrice;
 	}
 //catch-all for messages that aren't in above categories
 	else {
@@ -402,9 +415,23 @@ function checkIfSpoiler(a){
 }
 function checkIfQuote(a){
 	var thisMsgNode = a;
-	var thisMsgClass = thisMsgNode.className;
-	var evalPatt = new RegExp("quoteMsgText");
-	return evalPatt.test(thisMsgClass);
+	var quoteOrNot= thisMsgNode.querySelectorAll('[class*=QuoteMessage]').length;
+	if (quoteOrNot == 0){
+	return false;
+	}
+	else {
+	return true;
+	}
+}
+function checkIfFlip(a){
+	var thisMsgNode = a;
+	var flipOrNot= thisMsgNode.querySelectorAll('[class*=flipCoinAndResult]').length;
+	if (flipOrNot == 0){
+	return false;
+	}
+	else {
+	return true;
+	}
 }
 function checkIfVoiceChatMsg(a){
 	var thisMsgBlock = a;
@@ -459,6 +486,17 @@ function checkIfRandom(a){
 	var childClass = thisMsgNode.children[0].className;
 	var evalPatt = new RegExp("randomMsg");
 	return evalPatt.test(childClass);
+	}
+}
+
+function checkIfStoreLink(a){
+	var thisMsgNode = a;
+	var storeOrNot= thisMsgNode.querySelectorAll('[class*=ChatMessageSteamStore]').length;
+	if (storeOrNot == 0){
+	return false;
+	}
+	else {
+	return true;
 	}
 }
 function checkIfSpoilerMedia(a){
