@@ -25,7 +25,7 @@ function reformat() {
 	var chatRoomName = findChatRoomName();
 //Where the reformatted log will be stored
 	var newLog = '';
-	var styleCSS = '<style>body { font-family: monospace; color: #c1c6cf; background-color: #1d1f24} .speaker { color: #6dcff6} a { color: #57cbde} .large { zoom : 0.35} .serverMsg {  color: #aaffaa ; font-style: italic }</style>';
+	var styleCSS = '<style>body { font-family: monospace; color: #c1c6cf; background-color: #1d1f24} .speaker { color: #6dcff6} a { color: #57cbde} [class*=emoticon_large] { zoom : 0.35} .serverMsg {  color: #aaffaa ; font-style: italic }</style>';
 //	var styleCSS = '<style>body { font-family: monospace; color: black; background-color: white} .speaker { color: black}</style>';
 	var htmlHeader = '<title>' + chatRoomName + '</title>' + styleCSS;
 	for (var i = 0; i < chatHistory.length-1; i++){
@@ -190,19 +190,24 @@ function cleanupTimeStamp(a){
 function cleanupMsg(a){
 	var thisMsgNode = a;
 	var cleanedMsgText = '';
+//NonInlinedEmbed
+	if (checkFormatting(thisMsgNode,"NonInlinedEmbed")){
+	var dataCopyText = thisMsgNode.querySelectorAll('[class*=NonInlined]')[0].getAttributeNode("data-copytext").value;
+	cleanedMsgText = dataCopyText;
+	}
 //giphy
-	if (checkIfGiphy(thisMsgNode)){
+	else if (checkIfGiphy(thisMsgNode)){
 	var giphyCommand = thisMsgNode.firstChild.innerText;
 	var giphyImageURL = thisMsgNode.lastChild.getElementsByClassName("chatImageURL")[0].href;
 	cleanedMsgText = giphyCommand + '</br>' + linkefyURL(giphyImageURL);
 	}
 //pre
-	else if (checkIfPre(thisMsgNode)){
+	else if (checkFormatting(thisMsgNode,"PreMessage")){
 	var preText= thisMsgNode.querySelectorAll('[class*=PreMessage]')[0].innerHTML;
 	cleanedMsgText = '/pre ' + preText;
 	}
 //code
-	else if (checkIfCode(thisMsgNode)) {
+	else if (checkFormatting(thisMsgNode,"CodeMessage")) {
 	var codeText= thisMsgNode.querySelectorAll('[class*=CodeMessage]')[0].innerHTML;
 	cleanedMsgText = '/code ' + codeText;
 	}
@@ -212,7 +217,7 @@ function cleanupMsg(a){
 	cleanedMsgText = '/spoiler ' + spoilerTextHTML;
 	}
 //quote
-	else if (checkIfQuote(thisMsgNode)) {
+	else if (checkFormatting(thisMsgNode,"QuoteMessage")) {
 	cleanedMsgText = '/quote ' + thisMsgNode.querySelectorAll('[class*=QuoteMessage]')[0].innerHTML;
 	}
 //graph
@@ -233,14 +238,11 @@ function cleanupMsg(a){
 	}
 //Img
 	else if (checkIfImg(thisMsgNode)){
-//	alert(typeof thisMsgNode.getElementsByClassName("FailedToLoadImage")[0] === 'object');
 		if (typeof thisMsgNode.getElementsByClassName("FailedToLoadImage")[0] === 'object'){
 		cleanedMsgText = thisMsgNode.getElementsByClassName("FailedToLoadImage")[0].innerHTML;
 		}
 		else {
-//		var imgURL = thisMsgNode.getElementsByClassName("chatImageURL")[0].href;
 		var imgURL = thisMsgNode.getElementsByClassName("chatImageFull")[0].src;
-//		var imgURL = thisMsgNode.innerHTML;
 		cleanedMsgText = '[attached image] ' + linkefyURL(imgURL);
 		}
 	}
@@ -283,17 +285,18 @@ function cleanupMsg(a){
 	cleanedMsgText = '/spoiler ' + spoilerMediaHTML;
 	}
 //flip
-	else if (checkIfFlip(thisMsgNode)) {
+	else if (checkFormatting(thisMsgNode,"flipCoinAndResult")) {
 	cleanedMsgText = '/flip: ' + thisMsgNode.querySelectorAll('[class*=resultLabel]')[0].innerHTML;
 	}
 //StoreLink
-	else if (checkIfStoreLink(thisMsgNode)){
+	else if (checkFormatting(thisMsgNode,"ChatMessageSteamStore")){
 	var gameTitle = thisMsgNode.querySelectorAll('[class*=ChatMessageSteamStore_Name]')[0].innerHTML;
 	var gamePublisher = thisMsgNode.querySelectorAll('[class*=ChatMessageSteamStore_GameNameAndIcon]')[0].nextSibling.innerHTML;
 	var gameYear = thisMsgNode.querySelectorAll('[class*=ChatMessageSteamStore_GameNameAndIcon]')[0].nextSibling.nextSibling.innerHTML;
 	var gameSummary = thisMsgNode.querySelectorAll('[class*=ChatMessageSteamStore_Description]')[0].innerHTML;
 	var gamePrice = thisMsgNode.querySelectorAll('[class*=ChatMessageSteamStore_Pricing_Final]')[1].innerHTML;
-	cleanedMsgText = gameTitle + ' / ' + gamePublisher + ' / ' + gameYear + '<br />' + gameSummary  + '<br />' + gamePrice;
+	var gameURL = "https://store.steampowered.com/app/" + thisMsgNode.querySelectorAll('[class*=ChatMessageSteamStore_HeaderImage]')[0].src.split('/')[5];
+	cleanedMsgText = gameTitle + ' / ' + gamePublisher + ' / ' + gameYear + ' / ' + gamePrice  + '<br />' + gameSummary  + '<br />' +  linkefyURL(gameURL);
 	}
 //catch-all for messages that aren't in above categories
 	else {
@@ -346,6 +349,7 @@ function checkIfMe(a){
 	return true;
 	}
 }
+//Marked for deprecation
 function checkIfPre(a){
 	var thisMsgNode = a;
 	var preOrNot= thisMsgNode.querySelectorAll('[class*=PreMessage]').length;
@@ -356,6 +360,7 @@ function checkIfPre(a){
 	return true;
 	}
 }
+//Marked for deprecation
 function checkIfCode(a){
 	var thisMsgNode = a;
 	var codeOrNot= thisMsgNode.querySelectorAll('[class*=CodeMessage]').length;
@@ -413,6 +418,7 @@ function checkIfSpoiler(a){
 	return (evalPatt1.test(childClass) && !(evalPatt2.test(secondAttr)));
 	}
 }
+//Marked for deprecation
 function checkIfQuote(a){
 	var thisMsgNode = a;
 	var quoteOrNot= thisMsgNode.querySelectorAll('[class*=QuoteMessage]').length;
@@ -423,6 +429,7 @@ function checkIfQuote(a){
 	return true;
 	}
 }
+//Marked for deprecation
 function checkIfFlip(a){
 	var thisMsgNode = a;
 	var flipOrNot= thisMsgNode.querySelectorAll('[class*=flipCoinAndResult]').length;
@@ -488,7 +495,7 @@ function checkIfRandom(a){
 	return evalPatt.test(childClass);
 	}
 }
-
+//Marked for deprecation
 function checkIfStoreLink(a){
 	var thisMsgNode = a;
 	var storeOrNot= thisMsgNode.querySelectorAll('[class*=ChatMessageSteamStore]').length;
@@ -510,6 +517,17 @@ function checkIfSpoilerMedia(a){
 	var secondAttr = thisMsgNode.children[0].attributes[1].value;
 	var evalPatt2 = new RegExp("object");
 	return (evalPatt1.test(childClass) && evalPatt2.test(secondAttr));
+	}
+}
+function checkFormatting(a,b){
+	var thisMsgNode = a;
+	var checkClassName = "'[class*=" + b + "]'";
+	var testResult = thisMsgNode.querySelectorAll(eval(checkClassName)).length;
+	if (testResult == 0){
+	return false;
+	}
+	else {
+	return true;
 	}
 }
 //////////////////////////////////////////////////////////////////////////
