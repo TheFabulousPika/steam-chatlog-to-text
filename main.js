@@ -203,22 +203,23 @@ function cleanupMsg(a){
 	}
 //pre
 	else if (checkFormatting(thisMsgNode,"PreMessage")){
-	var preText= thisMsgNode.querySelectorAll('[class*=PreMessage]')[0].innerHTML;
-	cleanedMsgText = '/pre ' + preText;
+//	var preText= thisMsgNode.querySelectorAll('[class*=PreMessage]')[0].innerHTML;
+//	cleanedMsgText = '/pre ' + preText;
+	cleanedMsgText = '/pre ' + grabFirstInnerHTMLQueryClass(thisMsgNode,"PreMessage");
 	}
 //code
 	else if (checkFormatting(thisMsgNode,"CodeMessage")) {
-	var codeText= thisMsgNode.querySelectorAll('[class*=CodeMessage]')[0].innerHTML;
-	cleanedMsgText = '/code ' + codeText;
+//	var codeText= thisMsgNode.querySelectorAll('[class*=CodeMessage]')[0].innerHTML;
+	cleanedMsgText = '/code ' + grabFirstInnerHTMLQueryClass(thisMsgNode,"CodeMessage");
 	}
 //spoiler
 	else if (checkIfSpoiler(thisMsgNode)) {
-	var spoilerTextHTML = thisMsgNode.getElementsByClassName("spoilerMsg")[0].innerHTML;
-	cleanedMsgText = '/spoiler ' + spoilerTextHTML;
+//	var spoilerTextHTML = thisMsgNode.getElementsByClassName("spoilerMsg")[0].innerHTML;
+	cleanedMsgText = '/spoiler ' + grabFirstInnerHTMLByClass(thisMsgNode,"spoilerMsg");
 	}
 //quote
 	else if (checkFormatting(thisMsgNode,"QuoteMessage")) {
-	cleanedMsgText = '/quote ' + thisMsgNode.querySelectorAll('[class*=QuoteMessage]')[0].innerHTML;
+	cleanedMsgText = '/quote ' + grabFirstInnerHTMLQueryClass(thisMsgNode,"QuoteMessage");
 	}
 //graph
 	else if (checkFormatting(thisMsgNode,"ChatMessageOpenGraph")) {
@@ -237,7 +238,8 @@ function cleanupMsg(a){
 //Img
 	else if (checkFormatting(thisMsgNode,"chatImageContainer")) {
 		if (typeof thisMsgNode.getElementsByClassName("FailedToLoadImage")[0] === 'object'){
-		cleanedMsgText = thisMsgNode.getElementsByClassName("FailedToLoadImage")[0].innerHTML;
+//		cleanedMsgText = thisMsgNode.getElementsByClassName("FailedToLoadImage")[0].innerHTML;
+		cleanedMsgText = grabFirstInnerHTMLByClass(thisMsgNode,"FailedToLoadImage");
 		}
 		else {
 		var imgURL = thisMsgNode.getElementsByClassName("chatImageFull")[0].src;
@@ -250,7 +252,7 @@ function cleanupMsg(a){
 	}
 //CollapsedObject
 	else if (checkFormatting(thisMsgNode,"BBCodeAlreadyCollapsedText")) {
-	cleanedMsgText = "[" + thisMsgNode.querySelectorAll('[class*=BBCodeAlreadyCollapsedText]')[0].innerHTML + "]";
+	cleanedMsgText = "[" + grabFirstInnerHTMLQueryClass(thisMsgNode,"BBCodeAlreadyCollapsedText") + "]";
 	}
 //Sticker
 	else if (checkIfSticker(thisMsgNode)){
@@ -283,12 +285,12 @@ function cleanupMsg(a){
 	}
 //Spoiler Media
 	else if (checkIfSpoilerMedia(thisMsgNode)){
-	var spoilerMediaHTML = thisMsgNode.getElementsByClassName("spoilerMsg")[0].innerHTML;
-	cleanedMsgText = '/spoiler ' + spoilerMediaHTML;
+//	var spoilerMediaHTML = thisMsgNode.getElementsByClassName("spoilerMsg")[0].innerHTML;
+	cleanedMsgText = '/spoiler ' + grabFirstInnerHTMLByClass(thisMsgNode,"spoilerMsg");
 	}
 //flip
 	else if (checkFormatting(thisMsgNode,"flipCoinAndResult")) {
-	cleanedMsgText = '/flip: ' + thisMsgNode.querySelectorAll('[class*=resultLabel]')[0].innerHTML;
+	cleanedMsgText = '/flip: ' + grabFirstInnerHTMLQueryClass(thisMsgNode,"resultLabel");
 	}
 //StoreLink
 	else if (checkFormatting(thisMsgNode,"ChatMessageSteamStore")){
@@ -314,6 +316,18 @@ function linkefyURL(a){
 	var url = a;
 	var linkefiedURL = '<a href="' + url + '">' + url + '</a>';
 	return linkefiedURL;
+}
+function grabFirstInnerHTMLByClass(a,b){
+	var thisMsgNode = a;
+	var grabThisClassName = b;
+	var firstInnerHTML = thisMsgNode.getElementsByClassName(grabThisClassName)[0].innerHTML;
+	return firstInnerHTML;
+}
+function grabFirstInnerHTMLQueryClass(a,b){
+	var thisMsgNode = a;
+	var grabThisClassName = "'[class*=" + b + "]'";
+	var firstInnerHTML = thisMsgNode.querySelectorAll(eval(grabThisClassName))[0].innerHTML;
+	return firstInnerHTML;
 }
 function dataCopyTextWithLink(a,b){
 	var thisMsgNode = a;
