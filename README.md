@@ -7,4 +7,4 @@ Installation
 3. Go to url "chrome://extensions/"
 4. Enable Developer mode (top right corner)
 5. Click "LOAD UNPACKED" and select the location from step 1 that contains the  unzipped files (manifest.json, popup.html, popup.js, etc)
-6. White Steam icon with black border should now be visible in browser bar
+6. White Steam icon with black border <img src="icon.png"> should now be visible in browser bar
