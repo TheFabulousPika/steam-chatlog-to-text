@@ -221,7 +221,7 @@ function cleanupMsg(a){
 	cleanedMsgText = '/quote ' + thisMsgNode.querySelectorAll('[class*=QuoteMessage]')[0].innerHTML;
 	}
 //graph
-	else if (checkIfGraph(thisMsgNode)) {
+	else if (checkFormatting(thisMsgNode,"ChatMessageOpenGraph")) {
 	var graphURL = thisMsgNode.getElementsByClassName("ChatMessageOpenGraph_Title")[0].href;
 	var graphTitle = thisMsgNode.getElementsByClassName("ChatMessageOpenGraph_Title")[0].innerText;
 	cleanedMsgText = linkefyURL(graphURL) + '<br />' + graphTitle;
@@ -231,13 +231,11 @@ function cleanupMsg(a){
 	cleanedMsgText = '/me ' + thisMsgNode.innerText;
 	}
 //YouTube
-	else if (checkIfYouTube(thisMsgNode)){
-	var youTubeURL = thisMsgNode.getElementsByClassName("test HideWhenMinimized")[0].href;
-	var youTubeTitle = thisMsgNode.getElementsByClassName("BBCodeTitle")[0].innerText;
-	cleanedMsgText = linkefyURL(youTubeURL) + '<br />' + youTubeTitle;
+	else if (checkFormatting(thisMsgNode,"BBCodeYouTubeComponent")) {
+	cleanedMsgText = dataCopyTextWithLink(thisMsgNode,"BBCodeYouTubeComponent");
 	}
 //Img
-	else if (checkIfImg(thisMsgNode)){
+	else if (checkFormatting(thisMsgNode,"chatImageContainer")) {
 		if (typeof thisMsgNode.getElementsByClassName("FailedToLoadImage")[0] === 'object'){
 		cleanedMsgText = thisMsgNode.getElementsByClassName("FailedToLoadImage")[0].innerHTML;
 		}
@@ -249,6 +247,10 @@ function cleanupMsg(a){
 	else if (checkIfVideo(thisMsgNode)){
 	var videoURL = thisMsgNode.getElementsByClassName("chatImageURL")[0].href;
 	cleanedMsgText = '[attached video] ' + linkefyURL(videoURL);
+	}
+//CollapsedObject
+	else if (checkFormatting(thisMsgNode,"BBCodeAlreadyCollapsedText")) {
+	cleanedMsgText = "[" + thisMsgNode.querySelectorAll('[class*=BBCodeAlreadyCollapsedText]')[0].innerHTML + "]";
 	}
 //Sticker
 	else if (checkIfSticker(thisMsgNode)){
@@ -305,12 +307,28 @@ function cleanupMsg(a){
 	return cleanedMsgText;
 }
 
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Reformatting functions
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function linkefyURL(a){
 	var url = a;
 	var linkefiedURL = '<a href="' + url + '">' + url + '</a>';
 	return linkefiedURL;
 }
+function dataCopyTextWithLink(a,b){
+	var thisMsgNode = a;
+	var dataCopyClassName = "'[class*=" + b + "]'";
+	var dataCopyText = thisMsgNode.querySelectorAll(eval(dataCopyClassName))[0].getAttributeNode("data-copytext").value;
+	var dataCopyArray = dataCopyText.split("\n");
+	var dataCopyURL = dataCopyArray.pop();
+	var dataCopyMainText = dataCopyArray.join("");
+	var dataCopyTextWithLink = linkefyURL(dataCopyURL) + "<br />" + dataCopyMainText;
+	return dataCopyTextWithLink;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+// msgText type check functions
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function checkIfGiphy(a){
 	var thisMsgNode = a;
 	if (thisMsgNode.children.length < 2){
@@ -371,6 +389,7 @@ function checkIfCode(a){
 	return true;
 	}
 }
+//Marked for deprecation
 function checkIfGraph(a){
 	var thisMsgNode = a;
 	if (thisMsgNode.children.length < 1){
@@ -382,6 +401,7 @@ function checkIfGraph(a){
 	return evalPatt.test(childClass);
 	}
 }
+//Marked for deprecation
 function checkIfYouTube(a){
 	var thisMsgNode = a;
 	if (thisMsgNode.children.length < 1){
@@ -393,6 +413,7 @@ function checkIfYouTube(a){
 	return evalPatt.test(childClass);
 	}
 }
+//Marked for deprecation
 function checkIfImg(a){
 	var thisMsgNode = a;
 	if (thisMsgNode.children.length < 1){
