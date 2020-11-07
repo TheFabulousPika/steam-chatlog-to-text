@@ -18,6 +18,8 @@
 // ChatMessageBlockLastMessageBlockHasInternalTimeStamp(a)	----- calls ChatMessageBlock() and returns output
 // ChatMessageBlockLastMessageBlockSingletonMsg(a)		----- calls ChatMessageBlockSingletonMsg(a) and returns output
 // disconnectBlocker(a)						----- dummy function to deal with empty node
+// msgserverMsg(a)						----- server messages in group chat, (user joined, left, etc)
+// msgtimeDivisionnew_messages(a)				----- server message (new messages since [timestamp])
 // checkurl()							----- checks if URL is tab is https://steamcommunity.com/chat/
 function reformat() {
 	var activeTabIndex = findActiveTabIndex();
@@ -75,6 +77,10 @@ function msgtimeDivision(a){
 function msgtimeDivisiontime_passes(a){
 	var lineDivision = '<hr />';
 	return lineDivision;
+}
+function msgtimeDivisionnew_messages(a){
+	var msgtimeDivision = a.getAttributeNode("data-copytext").value + '<hr />';
+	return msgtimeDivision;
 }
 function msgserverMsg(a){
 	var serverMsg =  '<span class="serverMsg">' + a.innerText +  '</span><br />';
@@ -233,7 +239,7 @@ function cleanupMsg(a){
 	}
 //YouTube
 	else if (checkFormatting(thisMsgNode,"BBCodeYouTubeComponent")) {
-	cleanedMsgText = dataCopyTextWithLink(thisMsgNode,"BBCodeYouTubeComponent");
+	cleanedMsgText = getDataCopyTextWithLink(thisMsgNode,"BBCodeYouTubeComponent");
 	}
 //Img
 	else if (checkFormatting(thisMsgNode,"chatImageContainer")) {
@@ -302,6 +308,16 @@ function cleanupMsg(a){
 	var gameURL = "https://store.steampowered.com/app/" + thisMsgNode.querySelectorAll('[class*=ChatMessageSteamStore_HeaderImage]')[0].src.split('/')[5];
 	cleanedMsgText = gameTitle + ' / ' + gamePublisher + ' / ' + gameYear + ' / ' + gamePrice  + '<br />' + gameSummary  + '<br />' +  linkefyURL(gameURL);
 	}
+
+//Invitation
+	else if (checkFormatting(thisMsgNode,"ChatMessageInvite")){
+		if (checkFormatting(thisMsgNode,"InviteExpired")){
+		cleanedMsgText = 'A Group Chat invite was shared that is no longer valid';
+		}
+		else {
+		cleanedMsgText = grabFirstInnerHTMLQueryClass(thisMsgNode,"inviteLabel") + '<br />' + grabFirstInnerHTMLQueryClass(thisMsgNode,"groupName");
+		}
+	}
 //catch-all for messages that aren't in above categories
 	else {
 	cleanedMsgText = thisMsgNode.innerHTML;
@@ -329,17 +345,16 @@ function grabFirstInnerHTMLQueryClass(a,b){
 	var firstInnerHTML = thisMsgNode.querySelectorAll(eval(grabThisClassName))[0].innerHTML;
 	return firstInnerHTML;
 }
-function dataCopyTextWithLink(a,b){
+function getDataCopyTextWithLink(a,b){
 	var thisMsgNode = a;
 	var dataCopyClassName = "'[class*=" + b + "]'";
 	var dataCopyText = thisMsgNode.querySelectorAll(eval(dataCopyClassName))[0].getAttributeNode("data-copytext").value;
 	var dataCopyArray = dataCopyText.split("\n");
 	var dataCopyURL = dataCopyArray.pop();
 	var dataCopyMainText = dataCopyArray.join("");
-	var dataCopyTextWithLink = linkefyURL(dataCopyURL) + "<br />" + dataCopyMainText;
-	return dataCopyTextWithLink;
+	var getDataCopyTextWithLink = linkefyURL(dataCopyURL) + "<br />" + dataCopyMainText;
+	return getDataCopyTextWithLink;
 }
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 // msgText type check functions
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
