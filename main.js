@@ -23,7 +23,8 @@
 // checkurl()							----- checks if URL is tab is https://steamcommunity.com/chat/
 function reformat() {
 	var activeTabIndex = findActiveTabIndex();
-	var chatHistory = document.getElementsByClassName("chatHistory")[activeTabIndex].childNodes;
+	var activeChatBody = document.getElementsByClassName("DropTarget chatWindow MultiUserChat")[activeTabIndex];
+	var chatHistory = activeChatBody.getElementsByClassName("chatHistory")[0].childNodes;
 	var chatRoomName = findChatRoomName();
 //Where the reformatted log will be stored
 	var newLog = '';
