@@ -236,7 +236,7 @@ function cleanupMsg(a){
 	}
 //me
 	else if (checkIfMe(thisMsgNode)){
-	cleanedMsgText = '/me ' + thisMsgNode.innerText;
+	cleanedMsgText = '/me ' + thisMsgNode.innerHTML;
 	}
 //YouTube
 	else if (checkFormatting(thisMsgNode,"BBCodeYouTubeComponent")) {
