@@ -28,7 +28,7 @@ function reformat() {
 	var chatRoomName = findChatRoomName();
 //Where the reformatted log will be stored
 	var newLog = '';
-	var styleCSS = '<style>body { font-family: monospace; color: #c1c6cf; background-color: #1d1f24} .speaker { color: #6dcff6} a { color: #57cbde} [class*=emoticon_large] { zoom : 0.35} .serverMsg {  color: #aaffaa ; font-style: italic }</style>';
+	var styleCSS = '<style>body { font-family: monospace; color: #c1c6cf; background-color: #1d1f24} .speaker { color: #6dcff6} a { color: #57cbde} [class*=emoticon_large] { zoom : 0.35} .stickerImg { zoom : 0.5} .serverMsg {  color: #aaffaa ; font-style: italic}</style>';
 //	var styleCSS = '<style>body { font-family: monospace; color: black; background-color: white} .speaker { color: black}</style>';
 	var htmlHeader = '<title>' + chatRoomName + '</title>' + styleCSS;
 	for (var i = 0; i < chatHistory.length-1; i++){
@@ -127,7 +127,7 @@ function ChatMessageBlock(a){
 }
 function ChatMessageBlockSingletonMsg(a){
 	var thisChatBlock;
-	if (checkIfVoiceChatMsg(a)){
+	if (checkFormatting(a,"voiceChannelInvite")){
 	thisChatBlock = a.getElementsByClassName("msg voiceChannelInvite")[0].innerText + '<hr />';
 	return thisChatBlock;
 	}
@@ -203,7 +203,7 @@ function cleanupMsg(a){
 	cleanedMsgText = dataCopyText;
 	}
 //giphy
-	else if (checkIfGiphy(thisMsgNode)){
+	else if (checkFormatting(thisMsgNode,"giphyImg")) {
 	var giphyCommand = thisMsgNode.firstChild.innerText;
 	var giphyImageURL = thisMsgNode.lastChild.getElementsByClassName("chatImageURL")[0].href;
 	cleanedMsgText = giphyCommand + '</br>' + linkefyURL(giphyImageURL);
@@ -221,7 +221,6 @@ function cleanupMsg(a){
 	}
 //spoiler
 	else if (checkIfSpoiler(thisMsgNode)) {
-//	var spoilerTextHTML = thisMsgNode.getElementsByClassName("spoilerMsg")[0].innerHTML;
 	cleanedMsgText = '/spoiler ' + grabFirstInnerHTMLByClass(thisMsgNode,"spoilerMsg");
 	}
 //quote
@@ -245,7 +244,6 @@ function cleanupMsg(a){
 //Img
 	else if (checkFormatting(thisMsgNode,"chatImageContainer")) {
 		if (typeof thisMsgNode.getElementsByClassName("FailedToLoadImage")[0] === 'object'){
-//		cleanedMsgText = thisMsgNode.getElementsByClassName("FailedToLoadImage")[0].innerHTML;
 		cleanedMsgText = grabFirstInnerHTMLByClass(thisMsgNode,"FailedToLoadImage");
 		}
 		else {
@@ -253,7 +251,8 @@ function cleanupMsg(a){
 		cleanedMsgText = '[attached image] ' + linkefyURL(imgURL);
 		}
 	}
-	else if (checkIfVideo(thisMsgNode)){
+//Video
+	else if (checkFormatting(thisMsgNode,"chatVideoContainer")) {
 	var videoURL = thisMsgNode.getElementsByClassName("chatImageURL")[0].href;
 	cleanedMsgText = '[attached video] ' + linkefyURL(videoURL);
 	}
@@ -264,23 +263,23 @@ function cleanupMsg(a){
 //Sticker
 	else if (checkIfSticker(thisMsgNode)){
 	var stickerURL = thisMsgNode.firstChild.children[1].src;
-	cleanedMsgText = '<br /><img src="' + stickerURL + '" alt="' + stickerURL + '" />';
+	cleanedMsgText = '<br /><img class="stickerImg" src="' + stickerURL + '" alt="' + stickerURL + '" />';
 	}
 //Trade
-	else if (checkIfTradeInvite(thisMsgNode)){
+	else if (checkFormatting(thisMsgNode,"TradeOfferInvite")) {
 	var tradeOfferText = thisMsgNode.getElementsByClassName("inviteLabel TradeOfferInvite_Title")[0].innerText;
 	var tradeOfferURL = thisMsgNode.getElementsByClassName("inviteURLLink")[0].value;
 	cleanedMsgText = tradeOfferText + '<br />' + linkefyURL(tradeOfferURL);
 	}
 //Tweet
-	else if (checkIfTweet(thisMsgNode)){
+	else if (checkFormatting(thisMsgNode,"ChatMessageTweet")) {
 	var tweetHeader = thisMsgNode.getElementsByClassName("bbcode_ChatMessageTweet_Header_gpcGy")[0].attributes[2].value;
 	var tweetURL = thisMsgNode.getElementsByClassName("bbcode_ChatMessageTweet_Body_2mh_n")[0].attributes[2].value;
 	var tweetFooter = thisMsgNode.getElementsByClassName("bbcode_ChatMessageTweet_Footer_11DrN")[0].innerText;
 	cleanedMsgText = linkefyURL(tweetURL) + '<br />' + tweetHeader + ' ' + tweetFooter;
 	}
 //Random
-	else if (checkIfRandom(thisMsgNode)){
+	else if (checkFormatting(thisMsgNode,"randomMsg")) {
 	var randomHeader = '/random ';
 	var randomValues = thisMsgNode.firstElementChild.firstElementChild.nextSibling.innerText;
 	var actualValues = thisMsgNode.querySelectorAll('[class*=randomActual]');
@@ -359,6 +358,7 @@ function getDataCopyTextWithLink(a,b){
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 // msgText type check functions
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Marked for deprecation
 function checkIfGiphy(a){
 	var thisMsgNode = a;
 	if (thisMsgNode.children.length < 2){
@@ -491,6 +491,7 @@ function checkIfFlip(a){
 	return true;
 	}
 }
+//Marked for deprecation
 function checkIfVoiceChatMsg(a){
 	var thisMsgBlock = a;
 	if (thisMsgBlock.children[0].children[0].length < 1){
@@ -502,6 +503,7 @@ function checkIfVoiceChatMsg(a){
 	return evalPatt.test(childClass);
 	}
 }
+//Marked for deprecation
 function checkIfTradeInvite(a){
 	var thisMsgNode = a;
 	if (thisMsgNode.children.length < 1){
@@ -513,6 +515,7 @@ function checkIfTradeInvite(a){
 	return evalPatt.test(childClass);
 	}
 }
+//Marked for deprecation
 function checkIfVideo(a){
 	var thisMsgNode = a;
 	if (thisMsgNode.children.length < 1){
@@ -524,6 +527,7 @@ function checkIfVideo(a){
 	return evalPatt.test(childClass);
 	}
 }
+//Marked for deprecation
 function checkIfTweet(a){
 	var thisMsgNode = a;
 	if (thisMsgNode.children.length < 1){
@@ -535,6 +539,7 @@ function checkIfTweet(a){
 	return evalPatt.test(childClass);
 	}
 }
+//Marked for deprecation
 function checkIfRandom(a){
 	var thisMsgNode = a;
 	if (thisMsgNode.children.length < 1){
