@@ -4,6 +4,7 @@
 // 0.4 - CSS formatting for output html. Fixed timestamp appendment for message blocks consisting of multiple and consecutive /me commands
 // 0.5 - Support for multiple chat tabs. Converts chat history for active tab.
 // 0.6 - chatBody tag name update on Steam's end ("DropTarget chatBody" to "DropTarget chatWindow MultiUserChat"). Added feature to remove yesterday / day of week from timestamp.
+// 0.7 - Up to GitHub Issue #49
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Primary Functions
@@ -273,10 +274,11 @@ function cleanupMsg(a){
 	}
 //Tweet
 	else if (checkFormatting(thisMsgNode,"ChatMessageTweet")) {
-	var tweetHeader = thisMsgNode.getElementsByClassName("bbcode_ChatMessageTweet_Header_gpcGy")[0].attributes[2].value;
-	var tweetURL = thisMsgNode.getElementsByClassName("bbcode_ChatMessageTweet_Body_2mh_n")[0].attributes[2].value;
+	var tweetHeader = getDataCopyText(thisMsgNode,"bbcode_ChatMessageTweet_Header_gpcGy");
+	var tweetURL = getDataCopyText(thisMsgNode,"bbcode_ChatMessageTweet_Body_2mh_n");
+	var tweetBody = thisMsgNode.getElementsByClassName("bbcode_ChatMessageTweet_Body_2mh_n")[0].innerText;
 	var tweetFooter = thisMsgNode.getElementsByClassName("bbcode_ChatMessageTweet_Footer_11DrN")[0].innerText;
-	cleanedMsgText = linkefyURL(tweetURL) + '<br />' + tweetHeader + ' ' + tweetFooter;
+	cleanedMsgText = linkefyURL(tweetURL) + '<br />' + tweetHeader + '<br />' + tweetBody + '<br />' + tweetFooter;
 	}
 //Random
 	else if (checkFormatting(thisMsgNode,"randomMsg")) {
@@ -345,6 +347,12 @@ function grabFirstInnerHTMLQueryClass(a,b){
 	var firstInnerHTML = thisMsgNode.querySelectorAll(eval(grabThisClassName))[0].innerHTML;
 	return firstInnerHTML;
 }
+function getDataCopyText(a,b){
+	var thisMsgNode = a;
+	var dataCopyClassName = "'[class*=" + b + "]'";
+	var dataCopyText = thisMsgNode.querySelectorAll(eval(dataCopyClassName))[0].getAttributeNode("data-copytext").value;
+	return dataCopyText;
+}
 function getDataCopyTextWithLink(a,b){
 	var thisMsgNode = a;
 	var dataCopyClassName = "'[class*=" + b + "]'";
@@ -358,22 +366,6 @@ function getDataCopyTextWithLink(a,b){
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 // msgText type check functions
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Marked for deprecation
-function checkIfGiphy(a){
-	var thisMsgNode = a;
-	if (thisMsgNode.children.length < 2){
-	return false;
-	}
-	else {
-	var loopBoolean = false;
-		for (var i = 0; (i < thisMsgNode.children.length) && (loopBoolean == false) ; i++){
-		var childClass = thisMsgNode.children[i].className;
-		var evalPatt = new RegExp("giphyImg");
-		loopBoolean = evalPatt.test(childClass);
-		}
-	return loopBoolean;
-	}
-}
 function checkIfSticker(a){
 	var thisMsgNode = a;
 	if (typeof thisMsgNode.firstChild.children[1] == "undefined"){
@@ -397,64 +389,6 @@ function checkIfMe(a){
 	return true;
 	}
 }
-//Marked for deprecation
-function checkIfPre(a){
-	var thisMsgNode = a;
-	var preOrNot= thisMsgNode.querySelectorAll('[class*=PreMessage]').length;
-	if (preOrNot == 0){
-	return false;
-	}
-	else {
-	return true;
-	}
-}
-//Marked for deprecation
-function checkIfCode(a){
-	var thisMsgNode = a;
-	var codeOrNot= thisMsgNode.querySelectorAll('[class*=CodeMessage]').length;
-	if (codeOrNot == 0){
-	return false;
-	}
-	else {
-	return true;
-	}
-}
-//Marked for deprecation
-function checkIfGraph(a){
-	var thisMsgNode = a;
-	if (thisMsgNode.children.length < 1){
-	return false;
-	}
-	else {
-	var childClass = thisMsgNode.children[0].className;
-	var evalPatt = new RegExp("ChatMessageOpenGraph");
-	return evalPatt.test(childClass);
-	}
-}
-//Marked for deprecation
-function checkIfYouTube(a){
-	var thisMsgNode = a;
-	if (thisMsgNode.children.length < 1){
-	return false;
-	}
-	else {
-	var childClass = thisMsgNode.children[0].className;
-	var evalPatt = new RegExp("BBCodeYouTubeComponent");
-	return evalPatt.test(childClass);
-	}
-}
-//Marked for deprecation
-function checkIfImg(a){
-	var thisMsgNode = a;
-	if (thisMsgNode.children.length < 1){
-	return false;
-	}
-	else {
-	var childClass = thisMsgNode.children[0].className;
-	var evalPatt = new RegExp("chatImageContainer");
-	return evalPatt.test(childClass);
-	}
-}
 //0.6 Spoiler, Quote, Voicechat, Trade invite, attached video
 function checkIfSpoiler(a){
 	var thisMsgNode = a;
@@ -467,99 +401,6 @@ function checkIfSpoiler(a){
 	var secondAttr = thisMsgNode.children[0].attributes[1].value;
 	var evalPatt2 = new RegExp("object");
 	return (evalPatt1.test(childClass) && !(evalPatt2.test(secondAttr)));
-	}
-}
-//Marked for deprecation
-function checkIfQuote(a){
-	var thisMsgNode = a;
-	var quoteOrNot= thisMsgNode.querySelectorAll('[class*=QuoteMessage]').length;
-	if (quoteOrNot == 0){
-	return false;
-	}
-	else {
-	return true;
-	}
-}
-//Marked for deprecation
-function checkIfFlip(a){
-	var thisMsgNode = a;
-	var flipOrNot= thisMsgNode.querySelectorAll('[class*=flipCoinAndResult]').length;
-	if (flipOrNot == 0){
-	return false;
-	}
-	else {
-	return true;
-	}
-}
-//Marked for deprecation
-function checkIfVoiceChatMsg(a){
-	var thisMsgBlock = a;
-	if (thisMsgBlock.children[0].children[0].length < 1){
-	return false;
-	}
-	else {
-	var childClass = thisMsgBlock.children[0].children[0].className;
-	var evalPatt = new RegExp("voiceChannelInvite");
-	return evalPatt.test(childClass);
-	}
-}
-//Marked for deprecation
-function checkIfTradeInvite(a){
-	var thisMsgNode = a;
-	if (thisMsgNode.children.length < 1){
-	return false;
-	}
-	else {
-	var childClass = thisMsgNode.children[0].className;
-	var evalPatt = new RegExp("TradeOfferInvite");
-	return evalPatt.test(childClass);
-	}
-}
-//Marked for deprecation
-function checkIfVideo(a){
-	var thisMsgNode = a;
-	if (thisMsgNode.children.length < 1){
-	return false;
-	}
-	else {
-	var childClass = thisMsgNode.children[0].className;
-	var evalPatt = new RegExp("chatVideoContainer");
-	return evalPatt.test(childClass);
-	}
-}
-//Marked for deprecation
-function checkIfTweet(a){
-	var thisMsgNode = a;
-	if (thisMsgNode.children.length < 1){
-	return false;
-	}
-	else {
-	var childClass = thisMsgNode.children[0].className;
-	var evalPatt = new RegExp("ChatMessageTweet");
-	return evalPatt.test(childClass);
-	}
-}
-//Marked for deprecation
-function checkIfRandom(a){
-	var thisMsgNode = a;
-	if (thisMsgNode.children.length < 1){
-	return false;
-	}
-	else {
-	var childClass = thisMsgNode.children[0].className;
-	var evalPatt = new RegExp("randomMsg");
-	return evalPatt.test(childClass);
-	}
-}
-//Marked for deprecation
-function checkIfStoreLink(a){
-	var thisMsgNode = a;
-	var storeOrNot= thisMsgNode.querySelectorAll('[class*=ChatMessageSteamStore]').length;
-	if (storeOrNot == 0){
-	return false;
-	}
-	else {
-	return true;
 	}
 }
 function checkIfSpoilerMedia(a){
