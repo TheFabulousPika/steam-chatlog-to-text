@@ -28,8 +28,7 @@ function reformat() {
 	var chatRoomName = findChatRoomName();
 //Where the reformatted log will be stored
 	var newLog = '';
-	var styleCSS = '<style>body { font-family: monospace; color: #c1c6cf; background-color: #1d1f24} .speaker { color: #6dcff6} a { color: #57cbde} [class*=emoticon_large] { zoom : 0.35} .serverMsg {  color: #aaffaa ; font-style: italic }</style>';
-//	var styleCSS = '<style>body { font-family: monospace; color: black; background-color: white} .speaker { color: black}</style>';
+	var styleCSS = '<style>body { font-family: monospace; color: #c1c6cf; background-color: #1d1f24} .speaker { color: #6dcff6} a { color: #57cbde} [class*=emoticon_large] { zoom : 0.35} .stickerimg {zoom : 0.5 } ; .serverMsg {  color: #aaffaa ; font-style: italic }</style>';
 	var htmlHeader = '<title>' + chatRoomName + '</title>' + styleCSS;
 	for (var i = 0; i < chatHistory.length-1; i++){
 		var thisChatBlock = chatHistory[i];
@@ -264,7 +263,7 @@ function cleanupMsg(a){
 //Sticker
 	else if (checkIfSticker(thisMsgNode)){
 	var stickerURL = thisMsgNode.firstChild.children[1].src;
-	cleanedMsgText = '<br /><img src="' + stickerURL + '" alt="' + stickerURL + '" />';
+	cleanedMsgText = '<br /><img class="stickerimg" src="' + stickerURL + '" alt="' + stickerURL + '" />';
 	}
 //Trade
 	else if (checkIfTradeInvite(thisMsgNode)){
