@@ -176,12 +176,6 @@ function checkurl() {
 //					/me ----- prefix message with '/me'
 //					Graph ----- Extracts URL
 // linkefyURL(URL) 		----- creates HTML code linking to URL
-// checkIfMe(MessageNode) 	----- check if MessageNode uses /me formatting. Returns TRUE or FALSE
-// checkIfPre(MessageNode)	----- check if MessageNode uses /pre formatting. Returns TRUE or FALSE
-// checkIfCode(MessageNode)	----- check if MessageNode uses /code formatting. Returns TRUE or FALSE
-// checkIfGraph(MessageNode)	----- check if MessageNode is a graph (webpage previews generated from URLs). Returns TRUE or FALSE
-// checkIfYouTube(MessageNode)	----- check if MessageNode is a YouTube object. Returns TRUE or FALSE
-// checkIfImg(MessageNode)	----- check if MessageNode is an image object. Returns TRUE or FALSE
 
 function cleanupTimeStamp(a){
 //split timestamp string by spaces, take the last two pieces and join them with a space.
@@ -248,7 +242,7 @@ function cleanupMsg(a){
 		cleanedMsgText = grabFirstInnerHTMLByClass(thisMsgNode,"FailedToLoadImage");
 		}
 		else {
-		var imgURL = thisMsgNode.getElementsByClassName("chatImageFull")[0].src;
+		var imgURL = getDataCopyText(thisMsgNode,"chatImageContainer");
 		cleanedMsgText = '[attached image] ' + linkefyURL(imgURL);
 		}
 	}
@@ -365,6 +359,7 @@ function getDataCopyTextWithLink(a,b){
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 // msgText type check functions
+// checkIfMe(MessageNode) 	----- check if MessageNode uses /me formatting. Returns TRUE or FALSE
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function checkIfSticker(a){
 	var thisMsgNode = a;
