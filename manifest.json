@@ -1,9 +1,8 @@
 {
   "manifest_version": 2,
-
   "name": "Steam ChatLog2Text",
   "description": "Reformats Steam Chat Log on Web to AIM-like format",
-  "version": "0.5",
+  "version": "0.7",
 
   "browser_action": {
    "default_icon": "icon.png",
