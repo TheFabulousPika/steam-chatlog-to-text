@@ -267,7 +267,7 @@ function cleanupMsg(a){
 	cleanedMsgText = tradeOfferText + '<br />' + linkefyURL(tradeOfferURL);
 	}
 //Tweet
-	else if (checkFormatting(thisMsgNode,"ChatMessageTweet")) {
+	else if (checkFormatting(thisMsgNode,"ChatMessageTweet_Body")) {
 	var tweetHeader = getDataCopyText(thisMsgNode,"bbcode_ChatMessageTweet_Header_gpcGy");
 	var tweetURL = getDataCopyText(thisMsgNode,"bbcode_ChatMessageTweet_Body_2mh_n");
 	var tweetBody = thisMsgNode.getElementsByClassName("bbcode_ChatMessageTweet_Body_2mh_n")[0].innerText;
