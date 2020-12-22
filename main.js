@@ -192,6 +192,7 @@ function cleanupTimeStamp(a){
 function cleanupMsg(a){
 	var thisMsgNode = a;
 	var cleanedMsgText = '';
+	thisMsgNode = addAltTextToEmoticons(thisMsgNode);
 //NonInlinedEmbed
 	if (checkFormatting(thisMsgNode,"NonInlinedEmbed")){
 	var dataCopyText = thisMsgNode.querySelectorAll('[class*=NonInlined]')[0].getAttributeNode("data-copytext").value;
@@ -356,6 +357,17 @@ function getDataCopyTextWithLink(a,b){
 	var dataCopyMainText = dataCopyArray.join("");
 	var getDataCopyTextWithLink = linkefyURL(dataCopyURL) + "<br />" + dataCopyMainText;
 	return getDataCopyTextWithLink;
+}
+function addAltTextToEmoticons(a){
+	var thisMsgNode = a;
+	var allEmoticons = thisMsgNode.querySelectorAll('[class*=emoticon_emoticon]');
+	for (var i = 0; i < allEmoticons.length; i++){
+		var thisEmoticon = allEmoticons[i];
+		var altText = document.createAttribute("alt");
+		altText.value = thisEmoticon.getAttributeNode("data-copytext").value;
+		thisEmoticon.setAttributeNode(altText);
+	}
+	return thisMsgNode;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 // msgText type check functions
