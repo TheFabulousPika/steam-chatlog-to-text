@@ -89,31 +89,24 @@ function msgserverMsg(a){
 	return serverMsg;
 }
 function ChatMessageBlock(a){
-	var thisBlockSpeaker = a.getElementsByClassName("speakerName")[0].innerText;
-	var thisBlockMsg = a.getElementsByClassName("msgText");
+	var thisBlock = a;
+	var thisBlockSpeaker = thisBlock.getElementsByClassName("speakerName")[0].innerText;
+	var thisBlockTime = cleanupTimeStamp(thisBlock.getElementsByClassName("speakerTimeStamp")[0].innerText);
+	var thisBlockMsg = thisBlock.getElementsByClassName("msgText");
 	var firstMsg = thisBlockMsg[0];
-	var thisBlockTime;
-	if (checkIfMe(firstMsg)){
-	thisBlockTime = cleanupTimeStamp(firstMsg.nextSibling.innerText);
-	}
-	else {
-	thisBlockTime = cleanupTimeStamp(a.getElementsByClassName("speakerTimeStamp")[0].innerText);
-	}
 	var thisBlockMsgTime = new Array(thisBlockMsg.length);
 	var thisBlockReturn = '';
 	thisBlockMsgTime[0] = thisBlockTime;
 		for (var j = 1; j < thisBlockMsg.length ; j++){
 			var thisMsgTime;
 //If the msg has an associated timestamp within the log, use that one
-			if (thisBlockMsg[j].parentNode.childNodes.length > '2'){
-				if (checkIfMe(thisBlockMsg[j])){
-				thisMsgTime = thisBlockMsg[j].nextSibling.innerHTML;
+			if (checkIfMe(thisBlockMsg[j])){
+				thisMsgTime = thisBlockMsg[j].parentNode.getElementsByClassName("speakerTimeStamp")[0].innerText;
 				thisBlockMsgTime[j] = thisMsgTime;
-				}
-				else {
-				thisMsgTime = thisBlockMsg[j].previousSibling.innerHTML;
+			}
+			else if (thisBlockMsg[j].parentNode.getElementsByClassName("FriendChatTimeStamp").length > 0) {
+				thisMsgTime = thisBlockMsg[j].parentNode.getElementsByClassName("FriendChatTimeStamp")[0].innerText;
 				thisBlockMsgTime[j] = thisMsgTime;
-				}
 			}
 			else {
 //Subsequent msgs sent on the same timestamp from the same speaker will not have timestamps in the log, hence timestamp will be copied from the previous msg
@@ -137,7 +130,7 @@ function ChatMessageBlockSingletonMsg(a){
 	var thisBlockSpeaker = a.getElementsByClassName("speakerName")[0].innerText;
 	var msgTime;
 		if (checkIfMe(msgText)){
-		msgTime = cleanupTimeStamp(msgText.nextSibling.innerText);
+		msgTime = cleanupTimeStamp(msgText.parentNode.getElementsByClassName("speakerTimeStamp")[0].innerText);
 		}
 		else {
 		msgTime = cleanupTimeStamp(a.getElementsByClassName("speakerTimeStamp")[0].innerText);
