@@ -368,14 +368,13 @@ function addAltTextToEmoticons(a){
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function checkIfSticker(a){
 	var thisMsgNode = a;
-	if (typeof thisMsgNode.firstChild.children[1] == "undefined"){
-	return false;
-	}
-	if (typeof thisMsgNode.firstChild.children[1].src == "undefined"){
+	var canvasLength = thisMsgNode.getElementsByTagName("canvas").length;
+	var imgLength = thisMsgNode.getElementsByTagName("img").length;
+	if (canvasLength < 1 || imgLength < 1){
 	return false;
 	}
 	else {
-	var urlSrc = thisMsgNode.firstChild.children[1].src;
+	var urlSrc = thisMsgNode.getElementsByTagName("img")[0].src;
 	var evalPatt = new RegExp("sticker");
 	return evalPatt.test(urlSrc);
 	}
