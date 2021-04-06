@@ -8,3 +8,10 @@ Installation
 4. Enable Developer mode (top right corner)
 5. Click "LOAD UNPACKED" and select the location from step 1 that contains the  unzipped files (manifest.json, popup.html, popup.js, etc)
 6. White Steam icon with black border <img src="icon.png" /> should now be visible in browser bar
+
+Useage
+1. Go to https://steamcommunity.com/chat/
+2. Sign in and display chat window
+3. Click <img src="icon.png" /> in browser bar
+4. Click button "Convert chat log to text"
+5. Chat log will be reformatted and opened in a new browser tab
