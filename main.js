@@ -251,7 +251,7 @@ function cleanupMsg(a){
 	}
 //Sticker
 	else if (checkIfSticker(thisMsgNode)){
-	var stickerURL = thisMsgNode.firstChild.children[1].src;
+	var stickerURL = thisMsgNode.getElementsByTagName("img")[0].src;
 	cleanedMsgText = '<br /><img class="stickerImg" src="' + stickerURL + '" alt="' + stickerURL + '" />';
 	}
 //Trade
@@ -304,10 +304,13 @@ function cleanupMsg(a){
 		if (checkFormatting(thisMsgNode,"InviteExpired")){
 		cleanedMsgText = 'A Group Chat invite was shared that is no longer valid';
 		}
-		else {
+		else if (checkFormatting(thisMsgNode,"groupName")){
 		cleanedMsgText = grabFirstInnerHTMLQueryClass(thisMsgNode,"inviteLabel") + '<br />' + grabFirstInnerHTMLQueryClass(thisMsgNode,"groupName");
 		}
-	}
+		else {
+			cleanedMsgText = grabFirstInnerHTMLQueryClass(thisMsgNode,"inviteLabel");
+			}
+		}
 //catch-all for messages that aren't in above categories
 	else {
 	cleanedMsgText = thisMsgNode.innerHTML;
@@ -368,9 +371,10 @@ function addAltTextToEmoticons(a){
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function checkIfSticker(a){
 	var thisMsgNode = a;
-	var canvasLength = thisMsgNode.getElementsByTagName("canvas").length;
+//	var canvasLength = thisMsgNode.getElementsByTagName("canvas").length;
 	var imgLength = thisMsgNode.getElementsByTagName("img").length;
-	if (canvasLength < 1 || imgLength < 1){
+//	if (canvasLength < 1 || imgLength < 1){
+	if (imgLength < 1){
 	return false;
 	}
 	else {
