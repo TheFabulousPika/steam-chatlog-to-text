@@ -16,5 +16,3 @@ A chrome extension that converts Steam webchat log to text format
 4. Click button "Convert chat log to text"
 5. Chat log will be reformatted and opened in a new browser tab
 
-## Flowchart
-<img src="reference/steam%20chatlog.png" />
