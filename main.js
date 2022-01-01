@@ -257,7 +257,11 @@ function cleanupMsg(a){
 //Trade
 	else if (checkFormatting(thisMsgNode,"TradeOfferInvite")) {
 	var tradeOfferText = thisMsgNode.getElementsByClassName("inviteLabel TradeOfferInvite_Title")[0].innerText;
-	var tradeOfferURL = thisMsgNode.getElementsByClassName("inviteURLLink")[0].value;
+	var tradeOfferURLNode = thisMsgNode.getElementsByClassName("inviteURLLink").length;
+	var tradeOfferURL = "null URL";
+	if (tradeOfferURLNode > 0){
+	tradeOfferURL = thisMsgNode.getElementsByClassName("inviteURLLink")[0].value;
+	}
 	cleanedMsgText = tradeOfferText + '<br />' + linkefyURL(tradeOfferURL);
 	}
 //Tweet
@@ -294,9 +298,13 @@ function cleanupMsg(a){
 	var gamePublisher = thisMsgNode.querySelectorAll('[class*=ChatMessageSteamStore_GameNameAndIcon]')[0].nextSibling.innerHTML;
 	var gameYear = thisMsgNode.querySelectorAll('[class*=ChatMessageSteamStore_GameNameAndIcon]')[0].nextSibling.nextSibling.innerHTML;
 	var gameSummary = thisMsgNode.querySelectorAll('[class*=ChatMessageSteamStore_Description]')[0].innerHTML;
-	var gamePrice = thisMsgNode.querySelectorAll('[class*=ChatMessageSteamStore_Pricing_Final]')[1].innerHTML;
+	var gamePriceValue = "No Price Shown";
+	var gamePriceLength = thisMsgNode.querySelectorAll('[class*=ChatMessageSteamStore_Pricing_Final]').length;
+	if (gamePriceLength > 1){
+	gamePriceValue = thisMsgNode.querySelectorAll('[class*=ChatMessageSteamStore_Pricing_Final]')[1].innerHTML;
+	}
 	var gameURL = "https://store.steampowered.com/app/" + thisMsgNode.querySelectorAll('[class*=ChatMessageSteamStore_HeaderImage]')[0].src.split('/')[5];
-	cleanedMsgText = gameTitle + ' / ' + gamePublisher + ' / ' + gameYear + ' / ' + gamePrice  + '<br />' + gameSummary  + '<br />' +  linkefyURL(gameURL);
+	cleanedMsgText = gameTitle + ' / ' + gamePublisher + ' / ' + gameYear + ' / ' + gamePriceValue  + '<br />' + gameSummary  + '<br />' +  linkefyURL(gameURL);
 	}
 
 //Invitation
