@@ -216,10 +216,29 @@ function cleanupMsg(a){
 	else if (checkFormatting(thisMsgNode,"QuoteMessage")) {
 	cleanedMsgText = '/quote ' + grabFirstInnerHTMLQueryClass(thisMsgNode,"QuoteMessage");
 	}
+//SteamPublishedFile
+	else if (checkFormatting(thisMsgNode,"SteamPublishedFile")) {
+	var graphURL = "";
+	if (thisMsgNode.getElementsByClassName("ChatLargeImageContainer").length > 0 ){
+	graphURL = thisMsgNode.getElementsByClassName("ChatLargeImageContainer")[0].href;
+	}
+//	var graphTitle = "<h1 style='color: red'>SteamPublishedFile NO TITLE</h1>";
+	var graphTitle = "";
+	if (thisMsgNode.getElementsByClassName("ChatMessageOpenGraph_Description").length > 0 ){
+	graphTitle = thisMsgNode.getElementsByClassName("ChatMessageOpenGraph_Description")[0].innerText;
+	}
+	cleanedMsgText = linkefyURL(graphURL) + '<br />' + graphTitle;
+	}
 //graph
 	else if (checkFormatting(thisMsgNode,"ChatMessageOpenGraph")) {
-	var graphURL = thisMsgNode.getElementsByClassName("ChatMessageOpenGraph_Title")[0].href;
-	var graphTitle = thisMsgNode.getElementsByClassName("ChatMessageOpenGraph_Title")[0].innerText;
+	var graphURL = "";
+	if (thisMsgNode.getElementsByClassName("ChatMessageOpenGraph_Title").length > 0 ){
+	graphURL = thisMsgNode.getElementsByClassName("ChatMessageOpenGraph_Title")[0].href;
+	}
+	var graphTitle = "<h1 style='color: red'>Graph NO TITLE</h1>";
+	if (thisMsgNode.getElementsByClassName("ChatMessageOpenGraph_Title").length > 0 ){
+	graphTitle = thisMsgNode.getElementsByClassName("ChatMessageOpenGraph_Title")[0].innerText;
+	}
 	cleanedMsgText = linkefyURL(graphURL) + '<br />' + graphTitle;
 	}
 //me
